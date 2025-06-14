@@ -37,7 +37,7 @@
 
 ### **1. Clone Repository**
 ```bash
-git clone https://github.com/yourusername/AI-Financial-Analyst_MCP.git
+git clone https://github.com/GenTpham/AI-Financial-Analyst_MCP.git
 cd AI-Financial-Analyst_MCP
 ```
 
@@ -231,11 +231,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 📞 **Support**
 
 - 📧 Email: support@example.com
-- 💬 Issues: [GitHub Issues](https://github.com/yourusername/AI-Financial-Analyst_MCP/issues)
-- 📖 Documentation: [Wiki](https://github.com/yourusername/AI-Financial-Analyst_MCP/wiki)
+- 💬 Issues: [GitHub Issues](https://github.com/GenTpham/AI-Financial-Analyst_MCP/issues)
+- 📖 Documentation: [Wiki](https://github.com/GenTpham/AI-Financial-Analyst_MCP/wiki)
 
 ---
 
 **⭐ Star this repository if you find it helpful!**
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by GenTpham

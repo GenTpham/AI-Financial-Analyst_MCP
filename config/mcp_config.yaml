@@ -1,0 +1,114 @@
+# MCP AI Financial Analyst Configuration
+server:
+  name: "ai-financial-analyst"
+  version: "1.0.0"
+  host: "localhost"
+  port: 8000
+  
+# Agent definitions
+agents:
+  data_retrieval_agent:
+    name: "DataRetrievalAgent"
+    description: "Agent responsible for fetching financial data from various sources"
+    capabilities:
+      - "fetch_stock_data"
+      - "fetch_market_data"
+      - "read_csv_data"
+      - "validate_data"
+    data_sources:
+      - "yahoo_finance"
+      - "alpha_vantage"
+      - "csv_files"
+    
+  data_analysis_agent:
+    name: "DataAnalysisAgent"
+    description: "Agent for performing financial analysis and calculations"
+    capabilities:
+      - "technical_analysis"
+      - "fundamental_analysis"
+      - "statistical_analysis"
+      - "risk_assessment"
+    algorithms:
+      - "moving_averages"
+      - "rsi"
+      - "bollinger_bands"
+      - "macd"
+      - "correlation_analysis"
+    
+  visualization_agent:
+    name: "VisualizationAgent"
+    description: "Agent for creating charts and visualizations"
+    capabilities:
+      - "create_line_charts"
+      - "create_candlestick_charts"
+      - "create_heatmaps"
+      - "create_dashboard"
+    libraries:
+      - "plotly"
+      - "matplotlib"
+      - "seaborn"
+    
+  report_generation_agent:
+    name: "ReportGenerationAgent"
+    description: "Agent for generating comprehensive financial reports"
+    capabilities:
+      - "generate_summary_report"
+      - "create_pdf_report"
+      - "export_excel"
+      - "generate_insights"
+    output_formats:
+      - "pdf"
+      - "excel"
+      - "html"
+      - "json"
+
+# Data source configurations
+data_sources:
+  yahoo_finance:
+    enabled: true
+    rate_limit: 100  # requests per minute
+    
+  alpha_vantage:
+    enabled: true
+    api_key: "${ALPHA_VANTAGE_API_KEY}"
+    rate_limit: 5    # requests per minute (free tier)
+    
+  csv_data:
+    enabled: true
+    data_directory: "./data/csv"
+    supported_formats: ["csv", "xlsx", "json"]
+
+# Analysis settings
+analysis:
+  default_period: "1y"
+  technical_indicators:
+    - "sma_20"
+    - "sma_50"
+    - "rsi_14"
+    - "macd"
+    - "bollinger_bands"
+  
+  risk_metrics:
+    - "sharpe_ratio"
+    - "max_drawdown"
+    - "volatility"
+    - "var_95"
+
+# Output settings
+output:
+  charts_directory: "./output/charts"
+  reports_directory: "./output/reports"
+  default_chart_format: "html"
+  default_report_format: "pdf"
+
+# Logging configuration
+logging:
+  level: "INFO"
+  file: "./logs/mcp_financial_analyst.log"
+  max_size: "10MB"
+  backup_count: 5
+
+# Security settings
+security:
+  enable_authentication: false
+  api_keys_file: "./config/api_keys.env" 

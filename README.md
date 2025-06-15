@@ -11,27 +11,31 @@
 
 ### 🤖 **AI-Powered Analysis**
 - **Gemini AI Integration** - Phân tích thông minh với Google Gemini AI
-- **Market Sentiment Analysis** - Đánh giá tâm lý thị trường
-- **Investment Recommendations** - Khuyến nghị đầu tư chi tiết
+- **Market Sentiment Analysis** - Đánh giá tâm lý thị trường real-time
+- **Investment Recommendations** - Khuyến nghị đầu tư chi tiết với AI
 - **Risk Assessment** - Phân tích rủi ro chuyên sâu
+- **Real-time Data Display** - Hiển thị ngày giờ và dữ liệu real-time
 
-### 📊 **Technical Analysis**
+### 📊 **Advanced Technical Analysis**
 - **Technical Indicators** - RSI, MACD, Bollinger Bands, Moving Averages
-- **Price Pattern Recognition** - Nhận diện mô hình giá
-- **Volume Analysis** - Phân tích khối lượng giao dịch
+- **Price Pattern Recognition** - Nhận diện mô hình giá tự động
+- **Volume Analysis** - Phân tích khối lượng giao dịch chi tiết
 - **Support/Resistance Levels** - Xác định vùng hỗ trợ/kháng cự
+- **Professional Charts** - Biểu đồ candlestick với styling chuyên nghiệp
 
-### 📈 **Data Sources**
+### 📈 **Data Sources & Real-time Updates**
 - **Yahoo Finance** - Dữ liệu real-time miễn phí
 - **Alpha Vantage** - Dữ liệu chuyên nghiệp
 - **CSV Import** - Hỗ trợ dữ liệu tùy chỉnh
 - **Multi-timeframe** - 3M, 6M, 1Y, 2Y, 5Y
+- **Live Data Updates** - Cập nhật dữ liệu theo thời gian thực
 
-### 🎨 **Visualization**
-- **Interactive Charts** - Plotly candlestick charts
+### 🎨 **Modern Visualization**
+- **Interactive Charts** - Plotly candlestick charts với tương tác cao
 - **Technical Overlays** - Chỉ báo kỹ thuật trực quan
-- **Dashboard View** - Giao diện tổng quan
+- **Professional Dashboard** - Giao diện hiện đại, responsive
 - **Export Options** - HTML, PNG, PDF
+- **Dark/Light Theme** - Hỗ trợ nhiều theme
 
 ## 🚀 **Quick Start**
 
@@ -70,11 +74,13 @@ cp config/api_keys.env.template config/api_keys.env
 
 #### **🌐 Streamlit Web App (Recommended)**
 ```bash
-# Windows
+# Windows - Quick Start
 start_app.bat
 
 # Or manually
 python -m streamlit run streamlit_app.py
+
+# Open in browser: http://localhost:8501
 ```
 
 #### **📊 Console Demo**
@@ -82,8 +88,8 @@ python -m streamlit run streamlit_app.py
 # Simple demo
 python simple_demo.py
 
-# Full analysis demo
-python demo_gemini_analysis.py
+# Full analysis demo with AI
+python final_ai_demo.py
 
 # Test Gemini AI integration
 python test_gemini_integration.py
@@ -93,7 +99,7 @@ python test_gemini_integration.py
 
 ```
 AI-Financial-Analyst_MCP/
-├── 🌐 streamlit_app.py          # Main web application
+├── 🌐 streamlit_app.py          # Main web application (Updated!)
 ├── 🤖 src/agents/               # AI Agents
 │   ├── gemini_ai_client.py      # Gemini AI integration
 │   ├── data_retrieval_agent.py  # Data fetching
@@ -107,7 +113,9 @@ AI-Financial-Analyst_MCP/
 │   ├── charts/                  # Interactive charts
 │   └── reports/                 # Analysis reports
 ├── 🎯 examples/                 # Usage examples
-└── 📚 docs/                     # Documentation
+├── 📚 docs/                     # Documentation
+├── 🚀 final_ai_demo.py          # Latest AI demo
+└── 📱 Various demo files        # Multiple demo options
 ```
 
 ## 🔧 **Configuration**
@@ -117,7 +125,7 @@ AI-Financial-Analyst_MCP/
 | Service | Required | Purpose | Get Key |
 |---------|----------|---------|---------|
 | **Gemini AI** | ✅ Yes | AI Analysis | [Google AI Studio](https://makersuite.google.com/app/apikey) |
-| Alpha Vantage | ⚪ Optional | Financial Data | [Alpha Vantage](https://www.alphavantage.co/support/#api-key) |
+| Alpha Vantage | ⚪ Optional | Professional Data | [Alpha Vantage](https://www.alphavantage.co/support/#api-key) |
 | Deepseek AI | ⚪ Optional | Backup AI | [Deepseek Platform](https://platform.deepseek.com/) |
 
 ### **Environment Variables**
@@ -137,10 +145,11 @@ DEEPSEEK_BASE_URL=https://api.deepseek.com
 
 ### **Web Interface**
 1. Open http://localhost:8501
-2. Enter stock symbols: `AAPL,GOOGL,MSFT`
+2. Enter stock symbols: `AAPL,GOOGL,MSFT,NVDA`
 3. Select timeframe: `6mo`
 4. Enable AI Analysis ✅
 5. Click "🚀 Bắt đầu phân tích"
+6. View real-time results with date/time stamps
 
 ### **Python API**
 ```python
@@ -167,6 +176,7 @@ print(insights['market_sentiment'])  # "Tích cực" / "Tiêu cực" / "Trung t�
 🎯 Recommendation: MUA
 💰 Target Price: $200.00
 ⚠️ Risk Level: Trung bình
+🕐 Analysis Time: 2024-01-15 14:30:25
 🔑 Key Factors:
   1. Strong technical indicators
   2. Positive market momentum  
@@ -177,11 +187,19 @@ print(insights['market_sentiment'])  # "Tích cực" / "Tiêu cực" / "Trung t�
 
 ### **📈 Technical Indicators**
 - **RSI (14)**: 52.3 - Trung tính
-- **MACD**: Bullish Signal
+- **MACD**: Bullish Signal ↗️
 - **Bollinger Bands**: Price within bands
 - **Moving Averages**: SMA20 > SMA50 (Bullish)
+- **Volume**: Above average (+15%)
 
 ## 🛠️ **Development**
+
+### **Recent Updates**
+- ✅ Enhanced chart visualization with professional styling
+- ✅ Real-time date/time display
+- ✅ Improved UI/UX with modern design
+- ✅ Better error handling and loading states
+- ✅ Multiple demo files for different use cases
 
 ### **Project Structure**
 ```python
@@ -190,7 +208,7 @@ print(insights['market_sentiment'])  # "Tích cực" / "Tiêu cực" / "Trung t�
 ├── Data Agents         # Yahoo Finance, Alpha Vantage
 ├── Analysis Agents     # Technical, Fundamental, Risk
 ├── AI Agents          # Gemini AI, Deepseek AI
-├── Visualization      # Plotly, Matplotlib
+├── Visualization      # Enhanced Plotly charts
 └── Report Generation  # HTML, JSON, PDF
 ```
 
@@ -204,9 +222,25 @@ print(insights['market_sentiment'])  # "Tích cực" / "Tiêu cực" / "Trung t�
 
 - **Data Processing**: ~2-3 seconds per stock
 - **AI Analysis**: ~5-10 seconds per stock  
-- **Chart Generation**: ~1-2 seconds per chart
+- **Chart Generation**: ~1-2 seconds per chart (Enhanced!)
 - **Memory Usage**: ~100-200MB
 - **Concurrent Stocks**: Up to 10 stocks
+- **Real-time Updates**: Every 15 minutes
+
+## 🚀 **Latest Features**
+
+### **Enhanced Streamlit App**
+- Modern, professional chart styling
+- Real-time date and time display
+- Improved loading animations
+- Better error handling
+- Responsive design
+
+### **Multiple Demo Options**
+- `final_ai_demo.py` - Latest full-featured demo
+- `simple_demo.py` - Basic functionality demo
+- `ai_demo_with_fallback.py` - Fallback options demo
+- `demo_gemini_analysis.py` - Gemini AI specific demo
 
 ## 🤝 **Contributing**
 
@@ -222,20 +256,20 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 **Acknowledgments**
 
-- **Google Gemini AI** - Advanced AI analysis
-- **Yahoo Finance** - Free financial data
-- **Alpha Vantage** - Professional data APIs
-- **Plotly** - Interactive visualizations
-- **Streamlit** - Web application framework
+- **Google Gemini AI** - Advanced AI analysis capabilities
+- **Yahoo Finance** - Free financial data APIs
+- **Alpha Vantage** - Professional market data
+- **Plotly** - Interactive visualization library
+- **Streamlit** - Modern web application framework
 
 ## 📞 **Support**
 
-- 📧 Email: support@example.com
 - 💬 Issues: [GitHub Issues](https://github.com/GenTpham/AI-Financial-Analyst_MCP/issues)
 - 📖 Documentation: [Wiki](https://github.com/GenTpham/AI-Financial-Analyst_MCP/wiki)
+- 📧 Contact: For support and questions
 
 ---
 
 **⭐ Star this repository if you find it helpful!**
 
-Made with ❤️ by GenTpham
+Made with ❤️ by GenTpham | Last Updated: $(date)

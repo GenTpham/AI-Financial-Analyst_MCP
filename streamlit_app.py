@@ -141,28 +141,357 @@ def get_drawdown_level(drawdown):
         return {"color": "#28a745", "text": "Chấp nhận được"}
 
 def create_basic_chart(data, symbol):
-    """Create basic chart if HTML not available"""
+    """Create modern, beautiful chart with professional styling"""
     from plotly.subplots import make_subplots
     import plotly.graph_objects as go
     
-    fig = make_subplots(rows=2, cols=1, 
-                       subplot_titles=[f'{symbol} Stock Price', 'Volume'],
-                       vertical_spacing=0.1,
-                       row_width=[0.7, 0.3])
+
     
-    # Price chart
-    fig.add_trace(go.Candlestick(x=data.index,
-                                open=data['Open'],
-                                high=data['High'],
-                                low=data['Low'],
-                                close=data['Close'],
-                                name=symbol), row=1, col=1)
+    # Modern color scheme
+    colors = {
+        'background': '#0E1117',
+        'paper': '#1E2329', 
+        'text': '#FAFAFA',
+        'grid': '#2B2F36',
+        'green': '#00D4AA',
+        'red': '#F23645',
+        'blue': '#1f77b4',
+        'volume': '#4A90E2',
+        'annotation': '#262730'
+    }
     
-    # Volume chart
-    fig.add_trace(go.Bar(x=data.index, y=data['Volume'], name='Volume'), row=2, col=1)
+    fig = make_subplots(
+        rows=2, cols=1, 
+        subplot_titles=[f'📈 {symbol} Stock Price', '📊 Trading Volume'],
+        vertical_spacing=0.08,
+        row_heights=[0.7, 0.3],  # Give more space to volume
+        specs=[[{"secondary_y": False}], [{"secondary_y": False}]]
+    )
     
-    fig.update_layout(height=600, showlegend=False)
+    # Price chart with modern candlestick styling and detailed tooltips
+    # Create hover text for each candlestick - Use direct index access
+    hover_texts = []
+    
+    # Debug: Check data index type
+    print(f"Chart data index type: {type(data.index)}")
+    print(f"Chart data index sample: {data.index[:3] if len(data) > 0 else 'Empty'}")
+    
+    for i in range(len(data)):
+        try:
+            # Get actual timestamp from index
+            timestamp = data.index[i]
+            row = data.iloc[i]
+            
+            # Format timestamp properly with better handling
+            if isinstance(data.index, pd.DatetimeIndex):
+                # This is a proper DatetimeIndex
+                month = timestamp.month
+                day = timestamp.day
+                time_12hr = timestamp.strftime("%I:%M %p").lstrip('0')
+                date_str = f"{month}/{day} {time_12hr}"
+            elif hasattr(timestamp, 'strftime') and hasattr(timestamp, 'month'):
+                # This is a datetime object
+                month = timestamp.month
+                day = timestamp.day
+                time_12hr = timestamp.strftime("%I:%M %p").lstrip('0')
+                date_str = f"{month}/{day} {time_12hr}"
+            else:
+                # Fallback: try to convert or use position
+                try:
+                    # Try to convert to datetime
+                    dt = pd.to_datetime(timestamp)
+                    month = dt.month
+                    day = dt.day
+                    time_12hr = dt.strftime("%I:%M %p").lstrip('0')
+                    date_str = f"{month}/{day} {time_12hr}"
+                except:
+                    # Last resort: use data point number
+                    date_str = f"Data Point {i+1}"
+            
+            # Calculate metrics
+            change = row['Close'] - row['Open']
+            change_pct = (change / row['Open'] * 100) if row['Open'] != 0 else 0
+            range_val = row['High'] - row['Low']
+            
+            hover_text = (f"{symbol} Stock<br>"
+                         f"Date: {date_str}<br>"
+                         f"Open: ${row['Open']:.2f}<br>"
+                         f"High: ${row['High']:.2f}<br>"
+                         f"Low: ${row['Low']:.2f}<br>"
+                         f"Close: ${row['Close']:.2f}<br>"
+                         f"Change: ${change:.2f} ({change_pct:+.2f}%)<br>"
+                         f"Range: ${range_val:.2f}")
+            hover_texts.append(hover_text)
+        except Exception as e:
+            hover_texts.append(f"{symbol} - Data point {i}")
+    
+    fig.add_trace(go.Candlestick(
+        x=data.index,
+        open=data['Open'],
+        high=data['High'],
+        low=data['Low'],
+        close=data['Close'],
+        name=symbol,
+        increasing=dict(
+            line=dict(color=colors['green'], width=2),  # Increased width
+            fillcolor=colors['green']
+        ),
+        decreasing=dict(
+            line=dict(color=colors['red'], width=2),  # Increased width
+            fillcolor=colors['red']
+        ),
+        hovertext=hover_texts,
+        hoverinfo='text'
+    ), row=1, col=1)
+    
+    # Volume chart with gradient effect - Fix volume display
+    # Check if volume data exists and is not all zeros
+    if 'Volume' in data.columns and data['Volume'].sum() > 0:
+        volume_colors = ['rgba(74, 144, 226, 0.7)' if close >= open else 'rgba(242, 54, 69, 0.7)' 
+                         for close, open in zip(data['Close'], data['Open'])]
+        
+        # Create volume hover data
+        volume_avg = data['Volume'].mean()
+        volume_customdata = []
+        volume_text = []
+        
+        for close, open_price, volume in zip(data['Close'], data['Open'], data['Volume']):
+            vs_avg = ((volume / volume_avg - 1) * 100) if volume_avg != 0 else 0
+            turnover = volume * close
+            volume_customdata.append([close, vs_avg, turnover])
+            volume_text.append('Bullish' if close >= open_price else 'Bearish')
+        
+        # Create volume hover texts manually - Use direct index access
+        volume_hover_texts = []
+        for i in range(len(data)):
+            try:
+                # Get actual timestamp from index
+                timestamp = data.index[i]
+                row = data.iloc[i]
+                
+                # Format timestamp properly with better handling
+                if isinstance(data.index, pd.DatetimeIndex):
+                    # This is a proper DatetimeIndex
+                    month = timestamp.month
+                    day = timestamp.day
+                    time_12hr = timestamp.strftime("%I:%M %p").lstrip('0')
+                    date_str = f"{month}/{day} {time_12hr}"
+                elif hasattr(timestamp, 'strftime') and hasattr(timestamp, 'month'):
+                    # This is a datetime object
+                    month = timestamp.month
+                    day = timestamp.day
+                    time_12hr = timestamp.strftime("%I:%M %p").lstrip('0')
+                    date_str = f"{month}/{day} {time_12hr}"
+                else:
+                    # Fallback: try to convert or use position
+                    try:
+                        # Try to convert to datetime
+                        dt = pd.to_datetime(timestamp)
+                        month = dt.month
+                        day = dt.day
+                        time_12hr = dt.strftime("%I:%M %p").lstrip('0')
+                        date_str = f"{month}/{day} {time_12hr}"
+                    except:
+                        # Last resort: use data point number
+                        date_str = f"Data Point {i+1}"
+                
+                volume = row['Volume']
+                close_price = row['Close']
+                open_price = row['Open']
+                vs_avg = ((volume / volume_avg - 1) * 100) if volume_avg != 0 else 0
+                turnover = volume * close_price
+                trend = 'Bullish' if close_price >= open_price else 'Bearish'
+                
+                hover_text = (f"Trading Volume<br>"
+                             f"Date: {date_str}<br>"
+                             f"Volume: {volume:,.0f} shares<br>"
+                             f"Close Price: ${close_price:.2f}<br>"
+                             f"Trend: {trend}<br>"
+                             f"vs Avg: {vs_avg:+.1f}%<br>"
+                             f"Turnover: ${turnover:,.0f}")
+                volume_hover_texts.append(hover_text)
+            except Exception as e:
+                volume_hover_texts.append(f"Volume data point {i}")
+        
+        fig.add_trace(go.Bar(
+            x=data.index, 
+            y=data['Volume'], 
+            name='Volume',
+            marker=dict(
+                color=volume_colors,
+                line=dict(width=0)
+            ),
+            hovertext=volume_hover_texts,
+            hoverinfo='text'
+        ), row=2, col=1)
+    else:
+        # If no volume data, show placeholder
+        fig.add_trace(go.Scatter(
+            x=data.index,
+            y=[0] * len(data.index),
+            mode='lines',
+            name='No Volume Data',
+            line=dict(color='gray', dash='dash'),
+            hovertext='No volume data available',
+            hoverinfo='text'
+        ), row=2, col=1)
+    
+    # Add timestamp information to title
+    latest_timestamp = data.index[-1]
+    earliest_timestamp = data.index[0]
+    
+    # Safe timestamp formatting for title
+    try:
+        if hasattr(earliest_timestamp, 'strftime'):
+            start_str = earliest_timestamp.strftime('%m/%d')
+        else:
+            start_str = str(earliest_timestamp)[:5]
+        
+        if hasattr(latest_timestamp, 'strftime'):
+            month = latest_timestamp.month
+            day = latest_timestamp.day
+            time_12hr = latest_timestamp.strftime("%I:%M %p").lstrip('0')
+            end_str = f"{month}/{day} {time_12hr}"
+        else:
+            end_str = str(latest_timestamp)[:16]
+        
+        title_text = f"{symbol} Trading Analysis | {start_str} - {end_str}"
+    except:
+        title_text = f"{symbol} Trading Analysis"
+    
+    # Modern layout with dark theme
+    fig.update_layout(
+        height=600,
+        title=dict(
+            text=title_text,
+            x=0.5,
+            font=dict(size=20, color=colors['text'], family="Arial Black")
+        ),
+        showlegend=False,
+        hovermode='closest',
+        plot_bgcolor=colors['background'],
+        paper_bgcolor=colors['paper'],
+        font=dict(color=colors['text'], family="Arial"),
+        margin=dict(l=60, r=60, t=80, b=60),
+        
+        # X-axis styling
+        xaxis=dict(
+            gridcolor=colors['grid'],
+            gridwidth=0.5,
+            showgrid=True,
+            zeroline=False,
+            tickfont=dict(size=12, color=colors['text']),  # Increased font size
+            title=dict(text="Time", font=dict(size=14, color=colors['text']))
+        ),
+        xaxis2=dict(
+            gridcolor=colors['grid'],
+            gridwidth=0.5,
+            showgrid=True,
+            zeroline=False,
+            tickfont=dict(size=12, color=colors['text'])  # Increased font size
+        ),
+        
+        # Y-axis styling
+        yaxis=dict(
+            gridcolor=colors['grid'],
+            gridwidth=0.5,
+            showgrid=True,
+            zeroline=False,
+            tickfont=dict(size=12, color=colors['text']),  # Increased font size
+            title=dict(text="Price ($)", font=dict(size=14, color=colors['text'])),
+            tickformat='$.2f'
+        ),
+        yaxis2=dict(
+            gridcolor=colors['grid'],
+            gridwidth=0.5,
+            showgrid=True,
+            zeroline=False,
+            tickfont=dict(size=12, color=colors['text']),  # Increased font size
+            title=dict(text="Volume", font=dict(size=14, color=colors['text'])),
+            tickformat='.2s'
+        )
+    )
+    
+    # Remove range slider for cleaner look
     fig.update_xaxes(rangeslider_visible=False)
+    
+    # Add data freshness annotation with modern styling
+    try:
+        # Handle timezone-aware timestamps
+        if hasattr(latest_timestamp, 'tz') and latest_timestamp.tz is not None:
+            latest_naive = latest_timestamp.tz_convert('UTC').tz_localize(None)
+            now_naive = pd.Timestamp.now(tz='UTC').tz_localize(None)
+        else:
+            latest_naive = latest_timestamp
+            now_naive = pd.Timestamp.now()
+        
+        data_age = now_naive - latest_naive
+        total_seconds = data_age.total_seconds()
+    except:
+        # Fallback calculation
+        import datetime
+        now_dt = datetime.datetime.now()
+        if hasattr(latest_timestamp, 'to_pydatetime'):
+            latest_dt = latest_timestamp.to_pydatetime().replace(tzinfo=None)
+        else:
+            latest_dt = pd.to_datetime(latest_timestamp).replace(tzinfo=None)
+        data_age = now_dt - latest_dt
+        total_seconds = data_age.seconds + data_age.days * 86400
+
+    freshness_text = "Live" if total_seconds < 3600 else "Recent" if total_seconds < 86400 else "Delayed"
+    
+    # Safe annotation formatting (American style)
+    try:
+        if hasattr(latest_timestamp, 'strftime'):
+            # Windows-compatible format for M/D H:MM AM/PM
+            month = latest_timestamp.month
+            day = latest_timestamp.day
+            time_12hr = latest_timestamp.strftime("%I:%M %p").lstrip('0')
+            date_str = f"{month}/{day} {time_12hr}"
+        else:
+            date_str = str(latest_timestamp)[:16]
+        
+        annotation_text = f"{freshness_text} | Last Update: {date_str}"
+    except:
+        annotation_text = f"{freshness_text} | Market Data"
+    
+    # Modern annotation with glassmorphism effect
+    fig.add_annotation(
+        text=annotation_text,
+        xref="paper", yref="paper",
+        x=0.02, y=0.98,
+        showarrow=False,
+        font=dict(size=11, color=colors['text'], family="Arial"),
+        bgcolor="rgba(38, 39, 48, 0.8)",
+        bordercolor="rgba(255, 255, 255, 0.1)",
+        borderwidth=1,
+        borderpad=8,
+        opacity=0.9
+    )
+    
+    # Add market status indicator
+    import datetime
+    now = datetime.datetime.now()
+    market_status = "Market Open" if 9 <= now.hour < 16 and now.weekday() < 5 else "Market Closed"
+    
+    fig.add_annotation(
+        text=market_status,
+        xref="paper", yref="paper",
+        x=0.98, y=0.98,
+        showarrow=False,
+        font=dict(size=11, color=colors['text'], family="Arial"),
+        bgcolor="rgba(38, 39, 48, 0.8)",
+        bordercolor="rgba(255, 255, 255, 0.1)",
+        borderwidth=1,
+        borderpad=8,
+        opacity=0.9
+    )
+    
+    # Add subtle animations
+    fig.update_traces(
+        selector=dict(type='candlestick'),
+        line=dict(width=1.2)
+    )
     
     return fig
 
@@ -227,14 +556,38 @@ def run_analysis(symbols, period, enable_ai, enable_technical, enable_risk):
                     st.warning(f"Không có dữ liệu lịch sử cho {symbol}")
                     continue
                 
-                # Convert to DataFrame
+                # Convert to DataFrame and ensure proper datetime index
                 import pandas as pd
                 data_df = pd.DataFrame(historical_data)
+                
+                # Debug: print data structure
+                print(f"Debug data_df columns: {data_df.columns.tolist()}")
+                print(f"Debug data_df index: {data_df.index}")
+                print(f"Debug data_df index type: {type(data_df.index)}")
+                
+                # Ensure proper datetime index
                 if 'Date' in data_df.columns:
+                    # Convert Date column to datetime and set as index
+                    data_df['Date'] = pd.to_datetime(data_df['Date'])
                     data_df.set_index('Date', inplace=True)
-                elif data_df.index.name != 'Date':
-                    # If index is already datetime, keep it
-                    pass
+                elif 'date' in data_df.columns:
+                    # Handle lowercase date column
+                    data_df['date'] = pd.to_datetime(data_df['date'])
+                    data_df.set_index('date', inplace=True)
+                    data_df.index.name = 'Date'
+                elif not isinstance(data_df.index, pd.DatetimeIndex):
+                    # If no date column found, try to create from index
+                    if len(data_df) > 0:
+                        # Create a date range for the data
+                        end_date = pd.Timestamp.now()
+                        start_date = end_date - pd.Timedelta(days=len(data_df))
+                        date_range = pd.date_range(start=start_date, periods=len(data_df), freq='D')
+                        data_df.index = date_range
+                        data_df.index.name = 'Date'
+                
+                # Final check
+                print(f"Debug final index type: {type(data_df.index)}")
+                print(f"Debug final index sample: {data_df.index[:3] if len(data_df) > 0 else 'Empty'}")
                 
                 # Analyze data
                 analysis = run_async_safely(analysis_agent.analyze_stock(symbol, data_result))
@@ -318,23 +671,175 @@ if st.session_state.analysis_complete and st.session_state.analysis_data:
     # Overview metrics
     st.header("📈 Tổng quan thị trường")
     
+    # Display data timestamp info
+    if data:
+        first_symbol = list(data.keys())[0]
+        first_result = data[first_symbol]
+        if not first_result['data'].empty:
+            latest_date = first_result['data'].index[-1]
+            
+            # Handle timezone-aware timestamps properly
+            try:
+                # Convert to timezone-naive for comparison
+                if hasattr(latest_date, 'tz') and latest_date.tz is not None:
+                    # Convert to UTC then remove timezone info
+                    latest_date_naive = latest_date.tz_convert('UTC').tz_localize(None)
+                    now_naive = pd.Timestamp.now(tz='UTC').tz_localize(None)
+                else:
+                    latest_date_naive = latest_date
+                    now_naive = pd.Timestamp.now()
+                
+                data_age = now_naive - latest_date_naive
+            except Exception as e:
+                # Fallback: use simple datetime difference
+                import datetime
+                now_naive = datetime.datetime.now()
+                if hasattr(latest_date, 'to_pydatetime'):
+                    latest_dt = latest_date.to_pydatetime().replace(tzinfo=None)
+                else:
+                    latest_dt = pd.to_datetime(latest_date).replace(tzinfo=None)
+                data_age = now_naive - latest_dt
+            
+            # Format timestamp display
+            if hasattr(latest_date, 'strftime'):
+                date_str = latest_date.strftime("%Y-%m-%d %H:%M:%S")
+                if hasattr(latest_date, 'tz') and latest_date.tz:
+                    timezone = str(latest_date.tz)
+                    date_str += f" ({timezone})"
+            else:
+                date_str = str(latest_date)
+            
+            # Color code based on data freshness
+            try:
+                total_seconds = data_age.total_seconds()
+            except:
+                total_seconds = data_age.seconds + data_age.days * 86400
+                
+            if total_seconds < 3600:  # Less than 1 hour
+                freshness_color = "🟢"
+                freshness_text = "Fresh"
+            elif total_seconds < 86400:  # Less than 1 day
+                freshness_color = "🟡"
+                freshness_text = "Recent"
+            else:
+                freshness_color = "🔴"
+                freshness_text = "Delayed"
+            
+            st.info(f"📅 **Dữ liệu cập nhật:** {date_str} | {freshness_color} **{freshness_text}** | ⏱️ **Độ tuổi:** {str(data_age).split('.')[0]}")
+    
     cols = st.columns(len(data))
     for i, (symbol, result) in enumerate(data.items()):
         with cols[i]:
+            # Get latest data with timestamp
             latest_price = result['data']['Close'].iloc[-1]
+            latest_timestamp = result['data'].index[-1]
             price_change = ((result['data']['Close'].iloc[-1] / result['data']['Close'].iloc[-2]) - 1) * 100
+            
+            # Format timestamp for display (American style: M/D H:MM AM/PM)
+            if hasattr(latest_timestamp, 'strftime'):
+                # Windows-compatible format for M/D H:MM AM/PM
+                month = latest_timestamp.month
+                day = latest_timestamp.day
+                time_12hr = latest_timestamp.strftime("%I:%M %p").lstrip('0')
+                date_str = f"{month}/{day} {time_12hr}"
+                day_str = latest_timestamp.strftime('%A') if hasattr(latest_timestamp, 'strftime') else ""
+            else:
+                date_str = str(latest_timestamp)
+                day_str = ""
             
             delta_color = "normal" if price_change >= 0 else "inverse"
             st.metric(
                 label=f"{symbol}",
                 value=f"${latest_price:.2f}",
                 delta=f"{price_change:+.2f}%",
-                delta_color=delta_color
+                delta_color=delta_color,
+                help=f"Cập nhật lúc: {date_str}" + (f" ({day_str})" if day_str else "")
             )
     
     # Detailed analysis for each stock
     for symbol, result in data.items():
         st.header(f"📊 Phân tích chi tiết: {symbol}")
+        
+        # Add data info section
+        col1, col2, col3, col4 = st.columns(4)
+        
+        with col1:
+            data_points = len(result['data'])
+            st.metric("📊 Số điểm dữ liệu", data_points)
+        
+        with col2:
+            try:
+                start_timestamp = result['data'].index[0]
+                if hasattr(start_timestamp, 'strftime'):
+                    start_date = start_timestamp.strftime("%Y-%m-%d")
+                else:
+                    start_date = str(start_timestamp)[:10]
+                st.metric("📅 Từ ngày", start_date)
+            except Exception as e:
+                st.metric("📅 Từ ngày", "N/A")
+        
+        with col3:
+            try:
+                end_timestamp = result['data'].index[-1]
+                if hasattr(end_timestamp, 'strftime'):
+                    end_date = end_timestamp.strftime("%Y-%m-%d")
+                else:
+                    end_date = str(end_timestamp)[:10]
+                st.metric("📅 Đến ngày", end_date)
+            except Exception as e:
+                st.metric("📅 Đến ngày", "N/A")
+        
+        with col4:
+            try:
+                # Calculate data span safely
+                start_ts = result['data'].index[0]
+                end_ts = result['data'].index[-1]
+                
+                if hasattr(start_ts, 'to_pydatetime') and hasattr(end_ts, 'to_pydatetime'):
+                    data_span = (end_ts - start_ts).days
+                else:
+                    data_span = len(result['data'])
+                
+                st.metric("📈 Khoảng thời gian", f"{data_span} ngày")
+            except Exception as e:
+                st.metric("📈 Khoảng thời gian", "N/A")
+        
+        # Show latest data timestamp with more detail
+        try:
+            latest_timestamp = result['data'].index[-1]
+            latest_price = result['data']['Close'].iloc[-1]
+            latest_volume = result['data']['Volume'].iloc[-1]
+            
+            # Safe timestamp formatting (American style)
+            if hasattr(latest_timestamp, 'strftime'):
+                # Windows-compatible format for M/D H:MM AM/PM
+                month = latest_timestamp.month
+                day = latest_timestamp.day
+                time_12hr = latest_timestamp.strftime("%I:%M %p").lstrip('0')
+                date_str = f"{month}/{day} {time_12hr}"
+                day_str = latest_timestamp.strftime('%A') if hasattr(latest_timestamp, 'strftime') else ""
+            else:
+                date_str = str(latest_timestamp)
+                day_str = ""
+            
+            # Safe current time formatting
+            try:
+                current_time = pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')
+            except:
+                import datetime
+                current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            
+            st.markdown(f"""
+            <div style="background-color: #f0f2f6; padding: 15px; border-radius: 10px; margin: 10px 0;">
+                <h4>🕐 Thông tin dữ liệu mới nhất:</h4>
+                <p><strong>📅 Ngày giờ:</strong> {date_str} {f"({day_str})" if day_str else ""}</p>
+                <p><strong>💰 Giá đóng cửa:</strong> ${latest_price:.2f}</p>
+                <p><strong>📊 Khối lượng:</strong> {latest_volume:,.0f}</p>
+                <p><strong>⏰ Cập nhật:</strong> {current_time} (Thời gian hệ thống)</p>
+            </div>
+            """, unsafe_allow_html=True)
+        except Exception as e:
+            st.warning(f"Không thể hiển thị thông tin timestamp chi tiết: {str(e)}")
         
         # Create tabs for organized display
         tab1, tab2, tab3, tab4 = st.tabs(["📈 Biểu đồ", "🔍 Phân tích kỹ thuật", "⚠️ Phân tích rủi ro", "📝 Báo cáo AI"])

@@ -55,6 +55,7 @@ def set_page_style():
         border-left: 5px solid #667eea;
         margin-bottom: 1rem;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
+        color: #3c366b;
     }
     
     .metric-card:hover {
@@ -83,6 +84,7 @@ def set_page_style():
         border-left: 5px solid #e53e3e;
         margin-bottom: 1rem;
         box-shadow: 0 4px 20px rgba(229, 62, 62, 0.1);
+        color: #742a2a;
     }
     
     .success-card {
@@ -92,6 +94,7 @@ def set_page_style():
         border-left: 5px solid #38a169;
         margin-bottom: 1rem;
         box-shadow: 0 4px 20px rgba(56, 161, 105, 0.1);
+        color: #22543d;
     }
     
     .warning-card {
@@ -101,6 +104,7 @@ def set_page_style():
         border-left: 5px solid #d69e2e;
         margin-bottom: 1rem;
         box-shadow: 0 4px 20px rgba(214, 158, 46, 0.1);
+        color: #6b3b00;
     }
     
     /* Sidebar styling */
@@ -149,6 +153,18 @@ def set_page_style():
     /* Progress bar */
     .stProgress .st-bo {
         background-color: #667eea;
+    }
+                
+    /* Chỉnh màu chữ trong các tab */
+    .css-1h9usn7, .css-1b0udgb {
+        color: #2d3748 !important;  /* Màu xám đậm dễ đọc */
+        font-weight: 500;
+    }
+
+    /* Tab đang active (đã chọn) */
+    .css-1h9usn7[aria-selected="true"], .css-1b0udgb[aria-selected="true"] {
+        color: white !important;
+        font-weight: 600;
     }
     </style>
     """, unsafe_allow_html=True)

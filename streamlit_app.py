@@ -830,7 +830,7 @@ if st.session_state.analysis_complete and st.session_state.analysis_data:
                 current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             
             st.markdown(f"""
-            <div style="background-color: #f0f2f6; padding: 15px; border-radius: 10px; margin: 10px 0;">
+            <div style="background-color: #f0f2f6; padding: 15px; border-radius: 10px; margin: 10px 0; color: #2d3748;">
                 <h4>🕐 Thông tin dữ liệu mới nhất:</h4>
                 <p><strong>📅 Ngày giờ:</strong> {date_str} {f"({day_str})" if day_str else ""}</p>
                 <p><strong>💰 Giá đóng cửa:</strong> ${latest_price:.2f}</p>

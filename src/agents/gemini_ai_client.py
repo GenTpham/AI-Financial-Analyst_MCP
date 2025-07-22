@@ -157,14 +157,20 @@ class GeminiAIClient:
             sharpe_ratio = 0
             max_dd_value = 0
         
+        # Get current date for analysis
+        current_date = datetime.now().strftime("%d/%m/%Y")
+        current_time = datetime.now().strftime("%H:%M")
+        
         prompt = f"""
 Bạn là một chuyên gia phân tích tài chính hàng đầu với 20+ năm kinh nghiệm. 
-Hãy phân tích cổ phiếu {symbol} dựa trên dữ liệu sau và đưa ra insights chuyên nghiệp.
+Hãy phân tích cổ phiếu {symbol} dựa trên dữ liệu MỚI NHẤT và đưa ra insights chuyên nghiệp.
 
-📊 DỮ LIỆU PHÂN TÍCH:
+⏰ THỜI GIAN PHÂN TÍCH: {current_date} lúc {current_time} (Dữ liệu thời gian thực)
+
+📊 DỮ LIỆU PHÂN TÍCH MỚI NHẤT:
 
 🏷️ Cổ phiếu: {symbol}
-💰 Giá hiện tại: ${current_price:.2f}
+💰 Giá hiện tại: ${current_price:.2f} (cập nhật mới nhất)
 
 📈 PHÂN TÍCH KỸ THUẬT:
 • RSI: {rsi_value:.1f}
@@ -199,6 +205,12 @@ Hãy phân tích cổ phiếu {symbol} dựa trên dữ liệu sau và đưa ra 
 5. **OUTLOOK:**
    - Dự báo ngắn hạn (1-3 tháng)
    - Các yếu tố cần theo dõi
+
+⚠️ LƯU Ý QUAN TRỌNG:
+- Sử dụng ngày {current_date} làm ngày phân tích
+- KHÔNG sử dụng bất kỳ ngày nào khác (như 2023 hay các năm cũ)
+- Đây là dữ liệu và phân tích HIỆN TẠI, không phải lịch sử
+- Tập trung vào xu hướng và tình hình thị trường GẦN ĐÂY
 
 Hãy trả lời bằng tiếng Việt, chuyên nghiệp và có căn cứ. 
 Sử dụng emoji để làm rõ các phần và dễ đọc.
@@ -291,10 +303,16 @@ Sử dụng emoji để làm rõ các phần và dễ đọc.
     def _create_investment_prompt(self, symbol: str, analysis_data: Dict[str, Any]) -> str:
         """Tạo prompt cho khuyến nghị đầu tư"""
         
+        # Get current date for analysis
+        current_date = datetime.now().strftime("%d/%m/%Y")
+        current_time = datetime.now().strftime("%H:%M")
+        
         prompt = f"""
 Bạn là một cố vấn đầu tư chuyên nghiệp. Hãy đưa ra khuyến nghị đầu tư cụ thể cho cổ phiếu {symbol}.
 
-Dựa trên dữ liệu phân tích đã có, hãy trả lời:
+⏰ THỜI GIAN PHÂN TÍCH: {current_date} lúc {current_time} (Dữ liệu thời gian thực)
+
+Dựa trên dữ liệu phân tích MỚI NHẤT đã có, hãy trả lời:
 
 1. **QUYẾT ĐỊNH ĐẦU TƯ:** MUA/BÁN/GIỮ
 2. **LÝ DO CHI TIẾT:** (tối thiểu 150 từ)
@@ -302,6 +320,8 @@ Dựa trên dữ liệu phân tích đã có, hãy trả lời:
 4. **THỜI GIAN NẮM GIỮ:** Ngắn hạn/Trung hạn/Dài hạn
 5. **ĐIỀU KIỆN DỪNG LỖ:** Mức giá cụ thể
 6. **MỤC TIÊU GIÁ:** (nếu có)
+
+⚠️ LƯU Ý: Sử dụng ngày {current_date} làm ngày phân tích. Đây là khuyến nghị HIỆN TẠI, không phải lịch sử.
 
 Hãy đưa ra khuyến nghị rõ ràng, có căn cứ và thực tế.
         """

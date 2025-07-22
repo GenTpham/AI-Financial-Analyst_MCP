@@ -2,10 +2,10 @@
 developmentMode = false
 
 [server]
-runOnSave = true
+headless = true
 port = 8501
 baseUrlPath = ""
-enableCORS = true
+enableCORS = false
 enableXsrfProtection = false
 maxUploadSize = 200
 
@@ -14,10 +14,13 @@ gatherUsageStats = false
 
 [theme]
 primaryColor = "#1f77b4"
-backgroundColor = "#ffffff"
-secondaryBackgroundColor = "#f0f2f6"
-textColor = "#262730"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#262730"
+textColor = "#fafafa"
 font = "sans serif"
 
 [runner]
 magicEnabled = true 
+
+[client]
+showErrorDetails = false 

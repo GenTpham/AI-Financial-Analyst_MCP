@@ -1,13 +1,13 @@
 # Core MCP dependencies
 mcp==1.0.0
-pydantic==2.5.0
+pydantic>=2.8.0
 httpx==0.25.2
 websockets==12.0
 
 # Data processing and analysis
 pandas==2.3.0
 numpy==2.1.2
-scipy==1.11.4
+scipy==1.10.1 
 yfinance==0.2.48
 alpha-vantage==3.0.0
 

@@ -22,11 +22,7 @@ except ImportError:
     TA_AVAILABLE = False
     print("Warning: TA-Lib not available, some technical indicators may not work")
 
-# Technical analysis - we'll implement basic versions without talib initially
-from scipy import stats
-from sklearn.preprocessing import StandardScaler
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score
+# Technical analysis - using numpy and pandas for calculations
 
 class DataAnalysisAgent:
     """Agent chịu trách nhiệm phân tích dữ liệu tài chính"""
